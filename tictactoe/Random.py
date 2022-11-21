@@ -1,11 +1,19 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-import numpy as np
-import os
+import numpy as np 
 
-## Ez a függvény megváltoztatja a kör számot és átadja a gépnek
 def random_turn_change(b,r,c):
+    """
+    Megváltoztatja a játék mezőt és hívja a gépet
+    ha még nem nyert senki
+
+    global variables: turns, player_label
+    param b: a gomb amit megnyomunk és változtatunk
+    param r: a játék mező sora
+    param c: a játékmező oszlopa
+    """
+
     global turns
     global player_label
 
@@ -22,10 +30,15 @@ def random_turn_change(b,r,c):
     else:
         random_move()
 
-## A gép random választ egy kockát, addig probálkozik amíg nem választ elfogadható kockát
 def random_move():
+    """
+    A gép kiválaszt egy random sort és oszlopot amíg nem szabad a választott kocka
+    és hívja a wincheck()-et
+
+    global váltaozók: turns
+    """
+
     global turns
-    global player_label
 
     unplayable = True
     while unplayable:
@@ -87,8 +100,14 @@ def random_move():
         turns = turns + 1
     win_check()
     
-    ## Csekkolja hogy nyert e valaki
+
 def win_check():
+    """
+    Ellenőrzi, hogy nyert e az egyik játékos
+
+    return: True ha egy játékos nyert
+    """
+
     if (
     board[0][0] == board[0][1] == board[0][2] == "X" or board[1][0] == board[1][1] == board[1][2] == "X" or board[2][0] == board[2][1] == board[2][2] == "X" or
     board[0][0] == board[1][0] == board[2][0] == "X" or board[0][1] == board[1][1] == board[2][1] == "X" or board[0][2] == board[1][2] == board[2][2] == "X" or 
@@ -105,8 +124,12 @@ def win_check():
         winwindow("ITS A TIE")
         return True
 
-## Nyertes ablak
 def winwindow(winner):
+    """
+    A nyertest kiíró ablak
+
+    param winner: A nyertes játékos
+    """
 
     global wwindow
 
@@ -128,45 +151,58 @@ board = np.array([
         ['4','5','6'],
         ['7','8','9']])
 
-## Grafika, gombok stb..
-windowrandom = tk.Tk()
-windowrandom.resizable(True,True)
-windowrandom.title("A fun game of Tic Tac Toe with a randomized AI")
+def main():
+    """
+    Játék grafikája
 
-playerlabelvar = StringVar()
-playerlabelvar.set("Player: 1(X)")
-var = StringVar()
-var.set("The game begins!")
+    global variables: windowrandom, b1-b9, playerlabelvar, var
+    """
+    global windowrandom
+    global b1, b2, b3, b4, b5, b6, b7, b8, b9
+    global playerlabelvar
+    global var
 
 
-player_label = tk.Label(windowrandom, textvariable = playerlabelvar, font=('Times', 15))
-player_label.grid(row=0,column=0)
+    windowrandom = tk.Tk()
+    windowrandom.resizable(True,True)
+    windowrandom.title("A fun game of Tic Tac Toe with a randomized AI")
 
-turn_label = tk.Label(windowrandom, textvariable = var,  font=('Times', 15))
-turn_label.grid(row=4,column=1)
+    playerlabelvar = StringVar()
+    playerlabelvar.set("Player: 1(X)")
+    var = StringVar()
+    var.set("The game begins!")
 
-quit_button = tk.Button(windowrandom, text="Quit Game", font=('Times', 15), command=quit)
-quit_button.grid(row=0,column=2)
 
-b1 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b1,0,0) )
-b2 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b2,0,1) )
-b3 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b3,0,2) )
-b4 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b4,1,0) )
-b5 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b5,1,1) )
-b6 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b6,1,2) )
-b7 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b7,2,0) )
-b8 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b8,2,1) )
-b9 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b9,2,2) )
+    player_label = tk.Label(windowrandom, textvariable = playerlabelvar, font=('Times', 15))
+    player_label.grid(row=0,column=0)
 
-b1.grid(row=1,column=0)
-b2.grid(row=1,column=1)
-b3.grid(row=1,column=2)
-b4.grid(row=2,column=0)
-b5.grid(row=2,column=1)
-b6.grid(row=2,column=2)
-b7.grid(row=3,column=0)
-b8.grid(row=3,column=1)
-b9.grid(row=3,column=2)
+    turn_label = tk.Label(windowrandom, textvariable = var,  font=('Times', 15))
+    turn_label.grid(row=4,column=1)
 
-windowrandom.mainloop()
+    quit_button = tk.Button(windowrandom, text="Quit Game", font=('Times', 15), command=quit)
+    quit_button.grid(row=0,column=2)
 
+    b1 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b1,0,0) )
+    b2 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b2,0,1) )
+    b3 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b3,0,2) )
+    b4 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b4,1,0) )
+    b5 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b5,1,1) )
+    b6 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b6,1,2) )
+    b7 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b7,2,0) )
+    b8 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b8,2,1) )
+    b9 = tk.Button(windowrandom,text='',height=8, width=16,bg='black',activebackground='white',fg= 'white',font=('times 15'), command=lambda: random_turn_change(b9,2,2) )
+
+    b1.grid(row=1,column=0)
+    b2.grid(row=1,column=1)
+    b3.grid(row=1,column=2)
+    b4.grid(row=2,column=0)
+    b5.grid(row=2,column=1)
+    b6.grid(row=2,column=2)
+    b7.grid(row=3,column=0)
+    b8.grid(row=3,column=1)
+    b9.grid(row=3,column=2)
+
+    windowrandom.mainloop()
+
+if __name__ == '__main__':
+    main()

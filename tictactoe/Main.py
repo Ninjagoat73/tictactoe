@@ -10,10 +10,15 @@ board = [
         ['','',''],
         ['','','']]
 
-## A fő játék függvény
 def tictactoe_mp():
 
-    ## Hivatkozunk függvényen kívüli változókra
+    """
+    A más ember ellenes játék grafikája
+    
+    global váltaozók: window, turns, player_label
+    return: játék grafika
+    """
+
     global window
     global turns
     global player_label
@@ -60,8 +65,16 @@ def tictactoe_mp():
     ## Eltüntetjük a menüt
     root.withdraw()
 
-## Ez a függvény megváltoztatj a körszámot, melyik játékosnak a köre van, és beleírja a játék mezőnybe a megfelelő jelölést
 def turn_change(b,r,c):
+    """
+    Kört átadja a másik játékosnak és kitölti a játék mezőt
+    
+    global váltaozók: turns, player_label
+    param b: a gomb amit megnyomunk és változtatunk
+    param r: a játék mező sora
+    param c: a játékmező oszlopa
+    """
+
     global turns
     global player_label
 
@@ -74,14 +87,21 @@ def turn_change(b,r,c):
             b['text']='O'
             playerlabelvar.set("Player: 2(X)")
             board[r][c]="O"
+        ## Hozzáad egyet a körszámlálóhoz
         turns = turns + 1
         if turns >= 5:
             win_check()
-    else: messagebox.showerror("Error","This box is already filled")    
+    else: messagebox.showerror("Error","This box is already filled")
+    ## Körszámláló kiírást megváltoztatja    
     var.set("It is turn:" + str(turns))
 
-## Ez a függvény ellenőrzi hogy nyert-e valaki, vagy tele van a játékmező
 def win_check():
+    """
+    Ellenőrzi, hogy nyert e az egyik játékos
+
+    return: winwindow() ha egy játékos nyert
+    """
+
     if (
     board[0][0] == board[0][1] == board[0][2] == "X" or board[1][0] == board[1][1] == board[1][2] == "X" or board[2][0] == board[2][1] == board[2][2] == "X" or
     board[0][0] == board[1][0] == board[2][0] == "X" or board[0][1] == board[1][1] == board[2][1] == "X" or board[0][2] == board[1][2] == board[2][2] == "X" or 
@@ -95,8 +115,12 @@ def win_check():
     elif turns >= 9:
         winwindow("ITS A TIE")
 
-## Ez a függvény kiírja a nyertes játékost és ad lehetőséget újra játszani vagy kilépni
 def winwindow(winner):
+    """
+    A nyertest kiíró ablak
+    
+    param winner: A nyertes játékos
+    """
 
     global wwindow
 
@@ -111,12 +135,18 @@ def winwindow(winner):
     wbutton2 = tk.Button(wwindow,text='Return to Menu',command=menureturn)
     wbutton2.grid(row=2,column=2)
 
-## Ez a függvény bezárja az egész programot
 def destruct():
+    """
+    Bezárja az applikációt
+    """
     root.destroy()
 
-## Ez a függvény bezárja a játékmezőnyt és megnyitja a menüt
 def menureturn():
+    """
+    Újraindítja a játékot
+
+    global variables: turns, board
+    """
 
     global turns
     global board
@@ -133,6 +163,9 @@ def menureturn():
         ['','','']]
 
 def ai_window():
+    """
+    Nehézségi szint választás
+    """
     global aiWindow
 
     aiWindow = Toplevel(root)
@@ -142,32 +175,51 @@ def ai_window():
     randB.pack()
     aiB.pack()
 
-## Ez a függvény megnyitja a gép elleni játékot
 def runRandom():
+    """
+    Randomizált gép elleni játék indítása
+    """
     os.system('python Random.py')
     aiWindow.destroy()
 def runAI():
+    """
+    Normál gép elleni játék indítása
+    """
     os.system('python Computer.py')
     aiWindow.destroy()
 
-## Ez a menü
-root = tk.Tk()
+def main():
+    
+    """
+    A menü grafikája
 
-## Változók amiket majd használunk
-playerlabelvar = StringVar()
-playerlabelvar.set("Player: 1(X)")
-var = StringVar()
-var.set("The game begins!")
+    global variables: root, var, playerlabelvar
+    """
 
-## Grafika
-intro = tk.Label(root, text= "WELCOME TO TIC TAC TOE", font=('Times', 25))
-sp_button = tk.Button(root, text="Singleplayer",font= ('Times', 25), command=ai_window)
-mp_button = tk.Button(root, text="Multiplayer",font= ('Times', 25), command=tictactoe_mp)
-menu_quit = tk.Button(root, text="Quit Game", font=('Times', 25), command=quit)
+    global root
+    global var
+    global playerlabelvar
 
-intro.grid(row=0,column=0)
-sp_button.grid(row=1,column=0)
-mp_button.grid(row=2,column=0)
-menu_quit.grid(row=3,column=0)
+    root = tk.Tk()
 
-root.mainloop()
+    ## Változók amiket majd használunk
+    playerlabelvar = StringVar()
+    playerlabelvar.set("Player: 1(X)")
+    var = StringVar()
+    var.set("The game begins!")
+
+    ## Grafika
+    intro = tk.Label(root, text= "WELCOME TO TIC TAC TOE", font=('Times', 25))
+    sp_button = tk.Button(root, text="Singleplayer",font= ('Times', 25), command=ai_window)
+    mp_button = tk.Button(root, text="Multiplayer",font= ('Times', 25), command=tictactoe_mp)
+    menu_quit = tk.Button(root, text="Quit Game", font=('Times', 25), command=quit)
+
+    intro.grid(row=0,column=0)
+    sp_button.grid(row=1,column=0)
+    mp_button.grid(row=2,column=0)
+    menu_quit.grid(row=3,column=0)
+
+    root.mainloop()
+
+if __name__ == '__main__':
+    main()

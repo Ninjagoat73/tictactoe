@@ -14,8 +14,14 @@ board = [
     [0, 0, 0],
 ]
 
-
 def evaluate(state):
+    """
+    Trial and Error módon rangsorolja az összes lépést
+
+    param state: a tábla jelenlegi állapota
+    return: +1 ha a gép nyer; -1 ha az ember nyer; 0 ha döntetlen
+    """
+
     global score
     if wins(state, COMP):
         score = +1
@@ -27,6 +33,18 @@ def evaluate(state):
 
 
 def wins(state,player):
+    """
+    Teszteli az összes lehetséges nyerő állást. Lehtőségek:
+    * Három sor    [X X X] or [O O O]
+    * Három oszlop    [X X X] or [O O O]
+    * Kettő kereszt [X X X] or [O O O]
+
+    param state: a tábla éppeni állapota
+    param player: ember vagy gép
+
+    return: True, ha a player nyer
+    """
+
     win_state = [
         [state[0][0], state[0][1], state[0][2]],
         [state[1][0], state[1][1], state[1][2]],
@@ -44,10 +62,24 @@ def wins(state,player):
 
 
 def game_over(state):
+    """
+    Teszteli hogy a gép vagy az ember nyer
+
+    param state: a tábla éppeni állapota
+    return: True, ha nyer a gép vagy az ember
+    """
+
     return wins(state, HUMAN) or wins(state, COMP)
 
 
 def empty_cells(state):
+    """
+    Minedn üres kocka hozzáadódik egy listához
+
+    param state: a tábla éppeni állapota
+    return: üres cellákból álló listát
+    """
+
     cells = []
 
     for x, row in enumerate(state):
@@ -58,6 +90,14 @@ def empty_cells(state):
 
 
 def valid_move(x, y):
+    """
+    Ha a kocka benne van az empty_cells-ben akkor lehetséges lépés
+    
+    param x: x koordináta
+    param y: y koordináta
+
+    return: True, ha a board[x, y] üres
+    """
     if [x, y] in empty_cells(board):
         return True
     else:
@@ -65,6 +105,14 @@ def valid_move(x, y):
 
 
 def set_move(x, y, player):
+    """
+    Ha lehetséges a lépés átváltja a játékmezőt
+    
+    param x: x koordináta
+    param y: y koordináta
+    param player: ember vagy gép
+    """
+
     if valid_move(x, y):
         board[x][y] = player
         return True
@@ -73,6 +121,16 @@ def set_move(x, y, player):
 
 
 def minimax(state, depth, player):
+    """
+    Gépnek függvény, hogy megtalálja a legjobb lépést
+
+    param state: a tábla éppeni állapota
+    param depth: "gondolkodás" mélysége
+    param player: ember vagy gép
+
+    return: listát [legjobb sor, legjobb oszlop, legjobb pontozás]
+    """
+
     if player == COMP:
         best = [-1, +1, -infinity]
     else:
@@ -98,19 +156,29 @@ def minimax(state, depth, player):
     return best
 
 def ai_turn():
+    """
+    Ha a depth(mélység) kisebb mint 9 hívja a minimax függvényt
+    ha nem akkor random választ kockát
+
+    global variables: turns
+    """
 
     global turns
+
+    ## Depth = hány kör van a játékból és mennyit kell ellőre néznie
     depth = len(empty_cells(board))
     if depth == 0 or game_over(board):
         return
 
+    ## Ha a depth == 9 akkor random választ kockát
     if depth == 9:
         x = choice([0, 1, 2])
         y = choice([0, 1, 2])
+    ## Ha nem akkor a minimax funkciót használja
     else:
         move = minimax(board, depth, COMP)
         x, y = move[0], move[1]
-
+    ## Beírjuk a játékmezőbe a lépést
     set_move(x, y, COMP)
     if x == 0 and y == 0:
         b1['text'] = 'O'
@@ -136,6 +204,17 @@ def ai_turn():
 
 
 def human_turn(b,r,c):
+
+    """
+    Kört átadja a gépnek és kitölti a játék mezőt.
+    Ellenörzi, hogy nyert-e valaki
+    
+    global váltaozók: turns, player_label
+    param b: a gomb amit megnyomunk és változtatunk
+    param r: a játék mező sora
+    param c: a játékmező oszlopa
+    """
+
     global turns
     global player_label
 
@@ -163,6 +242,12 @@ def human_turn(b,r,c):
 
 def winwindow(winner):
 
+    """
+    A nyertest kiíró ablak
+
+    param winner: A nyertes játékos
+    """
+
     global wwindow
 
     wwindow = Toplevel(window)
@@ -178,9 +263,12 @@ def winwindow(winner):
 
 
 def main():
+    """
+    Játék grafika
 
+    global variables: window, b1-b9,player_laber, var, playerlabervar
+    """
     global window
-    window = tk.Tk()
     global b1
     global b2
     global b3
@@ -194,6 +282,7 @@ def main():
     global playerlabelvar
     global var
 
+    window = tk.Tk()
     playerlabelvar = StringVar()
     playerlabelvar.set("You start the game!")
     var = StringVar()
